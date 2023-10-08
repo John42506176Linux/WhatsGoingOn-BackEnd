@@ -1,6 +1,3 @@
-Here's the content converted to `readme.md` format for "GitHub Copilot Event Search App Backend":
-
-```markdown
 # WhatsGoingOn App Backend
 
 This is the backend for an app that allows people to search for current cool events in their area. The backend is built using Python and FastAPI, and provides an API for the frontend to interact with.
