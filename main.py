@@ -11,14 +11,16 @@ from langchain.prompts import (
 )
 import datetime
 load_dotenv()
-from tools.metaphor_tools import search, get_twitter_contents
+from tools.metaphor_tools import search
 from langchain.output_parsers import PydanticOutputParser
-
-
-# search = MetaphorSearchAPIWrapper()
+import threading
+from tools.twitter_tools import process_tweet
+# import asyncio
+import time
 
 # Initialize FastAPI app
 app = FastAPI()
+model = OpenAI(temperature=0,model_name="gpt-3.5-turbo-0613")
 
 # Define endpoint
 @app.post("/get_event")
@@ -41,14 +43,16 @@ async def get_events(data: UserInput,):
     contents = text.get_contents().contents
     publish_dates = [result.published_date for result in text.results]
     gpt_list = []
-
+    threads = []
+    start_time = time.time()
     for content,publish_date in zip(contents, publish_dates):
-        input = get_twitter_contents(content.extract)
-        _input = prompt.format_prompt(tweet=input,publish_date=publish_date)
-        model = OpenAI(temperature=0,model_name="gpt-3.5-turbo-0613")
-        output = model(_input.to_string())
-        output = parser.parse(output).dict()
-        output['url'] = content.url
-        gpt_list.append(output)
+        thread = threading.Thread(target=process_tweet, args=(model,content,publish_date,parser,prompt,gpt_list))
+        threads.append(thread)
+        thread.start()
+    for thread in threads:
+        thread.join()
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print(f"Elapsed time: {elapsed_time} seconds")
     # Print content for each result
     return {"response" : json.dumps(gpt_list)}
