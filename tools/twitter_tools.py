@@ -29,6 +29,7 @@ def process_batch_tweets(contents,publish_dates,parser,prompt,gpt_list):
             output = TweetEvent.fromEvent(event = output, retweet_count = tweet_content['retweets'], favorite_count = tweet_content['favorites'], reply_count = tweet_content['replies']).dict()
             output['url'] = content.url
             output['source'] = 'Twitter'
+            output['twitter_id'] = get_twitter_id(content.url)
             gpt_list.append(output)
         except Exception as e:
             #TODO: Add logging
@@ -42,3 +43,10 @@ def get_twitter_contents(extract: str):
     reply_count = int(re.search(r'reply_count: (\d+)', extract).group(1))
     favorite_count = int(re.search(r'favorite_count: (\d+)', extract).group(1))
     return {'tweet': tweet, 'retweets': retweet_count, 'replies': reply_count, 'favorites': favorite_count}
+
+def get_twitter_id(url: str):
+    match = re.search(r'/status/(\d+)', url)
+    if match:
+        return match.group(1)
+    else:
+        return None

@@ -13,3 +13,21 @@ class Event(BaseModel):
     is_location_available: bool = Field(description="Whether the tweet contains the location of the event (e.g true, false)")
     is_related_to_preference: bool = Field(description="Whether the tweet is related to the user's preference (e.g true, false)")
 
+mockEvent = {
+             "event_date": "2023-10-21", 
+             "event_link": "https://twitter.com/okaysteve/status/1715716266961309893/photo/1", 
+             "event_location": "San Francisco, CA", 
+             "event_title": "Engram Social", 
+             "favorite_count": 115, 
+             "is_event_date_available": True, 
+             "is_in_state": True, 
+             "is_local": True, 
+             "is_location_available": True, 
+             "is_related_to_preference": True, 
+             "is_tweet_event": True, 
+             "reply_count": 3, 
+             "retweet_count": 18, 
+             "source": "Twitter", 
+             "twitter_id": "1715716266961309893", 
+             "url": "https://twitter.com/okaysteve/status/1715716266961309893"
+            }
